@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧩 Python Module Challenge</title>
+    <style>
+        /* Modern CSS Reset & Variable Tokens */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-yellow: #f59e0b;
+            --accent-pink: #ec4899;
+            --accent-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --code-bg: #090d16;
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+            --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            --font-code: 'Courier New', Courier, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 1rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Typography & Clamp */
+        h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            color: #e2e8f0;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: clamp(1rem, 2vw, 1.15rem);
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* Cards & Containers */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Badge Pills */
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1.2rem 0;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #38bdf8;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .badge.easy { background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: #10b981; }
+        .badge.medium { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: #f59e0b; }
+        .badge.hard { background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: #ef4444; }
+        .badge.challenge { background: rgba(139, 92, 246, 0.2); color: #c084fc; border-color: #8b5cf6; }
+        .badge.final { background: rgba(236, 72, 153, 0.2); color: #f472b6; border-color: #ec4899; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            user-select: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Header Progress Bar */
+        .header-status {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-container {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar-bg {
+            background: rgba(255, 255, 255, 0.1);
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 10px;
+        }
+
+        .stats-group {
+            display: flex;
+            gap: 1.2rem;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--code-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.2rem;
+            overflow-x: auto;
+            font-family: var(--font-code);
+            font-size: 1rem;
+            color: #38bdf8;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        code {
+            font-family: var(--font-code);
+        }
+
+        .code-title {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px 6px 0 0;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #a78bfa;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: -0.5rem;
+            display: inline-block;
+        }
+
+        /* Material Content Blocks */
+        .materi-block {
+            border-left: 4px solid var(--accent-blue);
+            background: rgba(59, 130, 246, 0.05);
+            padding: 1.2rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        /* Interactive Collapsible / Secret Area */
+        .toggle-box {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px dashed var(--card-border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Action Buttons Area */
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Nav Footer */
+        .nav-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            gap: 1rem;
+        }
+
+        /* Check list styles for final project */
+        .checklist {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .checklist li {
+            padding: 0.5rem 0;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #cbd5e1;
+        }
+
+        /* Hide pages by default */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsiveness */
+        @media (max-width: 640px) {
+            body { padding: 0.8rem 0.5rem; }
+            .card { padding: 1.2rem; border-radius: 16px; }
+            .nav-footer { flex-direction: column; }
+            .nav-footer .btn { width: 100%; }
+            .action-row { flex-direction: column; }
+            .action-row .btn { width: 100%; }
+            .header-status { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ==================== 1. HOME PAGE ==================== -->
+    <div id="page-home" class="page active">
+        <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🧩</div>
+            <h1>PYTHON MODULE CHALLENGE</h1>
+            <p style="font-size: 1.3rem; color: #38bdf8; font-weight: 700; margin-bottom: 0.5rem;">
+                "Buat Modul Python-mu Sendiri!"
+            </p>
+            <p style="max-width: 650px; margin: 0 auto 1.5rem auto;">
+                Belajar membuat file Python sendiri, memasukkan function ke dalam module, lalu menggunakannya dengan <code style="color:#a78bfa">import</code>. Cocok untuk pemula!
+            </p>
+
+            <div class="badge-container">
+                <span class="badge">👨‍💻 Beginner Python</span>
+                <span class="badge">📦 Module</span>
+                <span class="badge">🎯 10 Challenges</span>
+            </div>
+
+            <div style="margin-top: 2.5rem;">
+                <button class="btn btn-primary" onclick="navigateTo('review')" style="font-size: 1.2rem; padding: 1rem 2.5rem;">
+                    🚀 MULAI BELAJAR
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 2. QUICK REVIEW / MATERI ==================== -->
+    <div id="page-review" class="page">
+        <div class="card">
+            <h1>📚 Quick Review & Materi Dasar</h1>
+            <p style="text-align: center; margin-bottom: 2rem;">Pelajari konsep dasar berikut sebelum menyelesaikan challenge!</p>
+
+            <!-- MATERI 1 -->
+            <div class="materi-block">
+                <h2>MATERI 1 — APA ITU MODULE?</h2>
+                <p><strong>Module adalah file Python yang berisi kode yang bisa kita gunakan kembali.</strong></p>
+                <p>📦 <em>Analogi:</em> Bayangkan module seperti sebuah <strong>kotak alat (toolbox)</strong>. Di dalam kotak tersebut terdapat berbagai macam alat (function, variable) yang siap kamu pakai kapan saja.</p>
+                <div class="code-title">hitung.py</div>
+<pre><code>def tambah(a, b):
+    return a + b</code></pre>
+                <p>File <code>hitung.py</code> di atas adalah sebuah module yang bisa digunakan oleh program lain!</p>
+            </div>
+
+            <!-- MATERI 2 -->
+            <div class="materi-block">
+                <h2>MATERI 2 — FILE PYTHON</h2>
+                <p>File kode Python selalu disimpan dengan ekstensi <strong>.py</strong>.</p>
+                <p>Contoh nama file Python:</p>
+                <ul style="margin-left: 1.5rem; color: #94a3b8; margin-bottom: 0.8rem;">
+                    <li><code>hitung.py</code></li>
+                    <li><code>game.py</code></li>
+                    <li><code>tools.py</code></li>
+                </ul>
+                <p>Setiap file berkahiran <code>.py</code> yang kamu buat secara otomatis bisa dijadikan sebagai module!</p>
+            </div>
+
+            <!-- MATERI 3 -->
+            <div class="materi-block">
+                <h2>MATERI 3 — MEMBUAT FUNCTION</h2>
+                <p>Kata kunci <code>def</code> digunakan untuk membuat function (perintah tersimpan).</p>
+<pre><code>def sapa():
+    print("Halo!")
+
+# Cara memanggil function:
+sapa()</code></pre>
+                <p><strong>Output:</strong> <code>Halo!</code></p>
+            </div>
+
+            <!-- MATERI 4 -->
+            <div class="materi-block">
+                <h2>MATERI 4 — MEMBUAT MODULE SENDIRI</h2>
+                <p>Misalnya kita memiliki dua buah file di folder yang sama:</p>
+                <div class="code-title">tools.py (Module)</div>
+<pre><code>def sapa():
+    print("Halo dari module!")</code></pre>
+
+                <div class="code-title">main.py (Program Utama)</div>
+<pre><code>import tools
+
+tools.sapa()</code></pre>
+                <p><strong>Output:</strong> <code>Halo dari module!</code></p>
+            </div>
+
+            <!-- MATERI 5 -->
+            <div class="materi-block">
+                <h2>MATERI 5 — IMPORT MODULE SENDIRI</h2>
+                <p>Perhatikan cara kerjanya:</p>
+                <p>1. <code>import tools</code> → "Kita ingin mengambil module bernama tools."</p>
+                <p>2. <code>tools.sapa()</code> → "Kita menjalankan function sapa() yang ada di dalam module tools."</p>
+                <p style="text-align: center; font-weight: bold; color: #38bdf8; margin-top: 1rem;">
+                    tools.py ➡️ import tools ➡️ main.py ➡️ tools.sapa()
+                </p>
+            </div>
+
+            <!-- MATERI 6 -->
+            <div class="materi-block">
+                <h2>MATERI 6 — MODULE DENGAN VARIABLE</h2>
+                <p>Module tidak hanya berisi function, tetapi juga bisa menyimpan variable!</p>
+                <div class="code-title">data.py</div>
+<pre><code>nama = "Budi"
+umur = 13</code></pre>
+                <div class="code-title">main.py</div>
+<pre><code>import data
+
+print(data.nama)
+print(data.umur)</code></pre>
+            </div>
+
+            <!-- MATERI 7 -->
+            <div class="materi-block">
+                <h2>MATERI 7 — FUNCTION DENGAN PARAMETER</h2>
+                <div class="code-title">hitung.py</div>
+<pre><code>def tambah(a, b):
+    return a + b</code></pre>
+                <div class="code-title">main.py</div>
+<pre><code>import hitung
+
+hasil = hitung.tambah(5, 3)
+print(hasil)</code></pre>
+                <p><strong>Output:</strong> <code>8</code></p>
+            </div>
+
+            <!-- MATERI 8 -->
+            <div class="materi-block">
+                <h2>MATERI 8 — MODULE + IF</h2>
+                <div class="code-title">cek.py</div>
+<pre><code>def cek_nilai(nilai):
+    if nilai >= 70:
+        print("Lulus")</code></pre>
+                <div class="code-title">main.py</div>
+<pre><code>import cek
+
+cek.cek_nilai(80)</code></pre>
+                <p><strong>Output:</strong> <code>Lulus</code></p>
+            </div>
+
+            <!-- MATERI 9 -->
+            <div class="materi-block">
+                <h2>MATERI 9 — MODULE + IF ELSE</h2>
+                <div class="code-title">cek.py</div>
+<pre><code>def cek_nilai(nilai):
+    if nilai >= 70:
+        print("Lulus")
+    else:
+        print("Belum lulus")</code></pre>
+                <div class="code-title">main.py</div>
+<pre><code>import cek
+
+cek.cek_nilai(60)</code></pre>
+                <p><strong>Output:</strong> <code>Belum lulus</code></p>
+            </div>
+
+            <!-- MATERI 10 -->
+            <div class="materi-block">
+                <h2>MATERI 10 — MODULE + WHILE</h2>
+                <div class="code-title">game.py</div>
+<pre><code>def hitung():
+    angka = 1
+    while angka <= 3:
+        print(angka)
+        angka = angka + 1</code></pre>
+                <div class="code-title">main.py</div>
+<pre><code>import game
+
+game.hitung()</code></pre>
+                <p><strong>Output:</strong><br>1<br>2<br>3</p>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn-success" onclick="navigateToQuestion(1)" style="font-size: 1.2rem; padding: 1rem 2.5rem;">
+                    🎯 MULAI CHALLENGE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 3. CHALLENGE SYSTEM (Dynamic Cards 1-10) ==================== -->
+    <div id="page-challenge" class="page">
+        <!-- Header status info -->
+        <div class="header-status">
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span id="question-number-label">Soal 1 dari 10</span>
+                    <span id="progress-percent-label">10%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                </div>
+            </div>
+            <div class="stats-group">
+                <span>🏆 Score: <span id="score-val" style="color: #fbbf24;">0</span> / 100</span>
+                <span>✅ <span id="completed-val" style="color: #34d399;">0</span> / 10</span>
+            </div>
+        </div>
+
+        <!-- Dynamic Question Card -->
+        <div class="card" id="question-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <span id="difficulty-badge" class="badge easy">🟢 EASY</span>
+                <span id="q-id-title" style="color: var(--text-muted); font-weight: bold;">CHALLENGE #1</span>
+            </div>
+
+            <h2 id="question-title">Judul Soal</h2>
+            <p id="question-description" style="font-size: 1.1rem; color: #f1f5f9; white-space: pre-line;">
+                Deskripsi Soal
+            </p>
+
+            <!-- Buttons: Hint & Reveal Answer -->
+            <div class="action-row">
+                <button class="btn btn-secondary" onclick="toggleHint()">
+                    💡 Hint
+                </button>
+                <button class="btn btn-secondary" onclick="toggleAnswer()" id="btn-toggle-answer">
+                    🔓 Lihat Kunci Jawaban
+                </button>
+            </div>
+
+            <!-- Hint Box -->
+            <div id="hint-box" class="toggle-box" style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.08);">
+                <p style="color: #fbbf24; font-weight: bold; margin-bottom: 0.3rem;">💡 Petunjuk:</p>
+                <p id="hint-text" style="color: #fef08a; margin-bottom: 0;"></p>
+            </div>
+
+            <!-- Answer Box -->
+            <div id="answer-box" class="toggle-box" style="border-color: #10b981;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <p style="color: #34d399; font-weight: bold; margin: 0;">🔑 Kunci Jawaban:</p>
+                    <button class="btn btn-secondary" onclick="copyCode()" id="btn-copy" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
+                        📋 Copy Code
+                    </button>
+                </div>
+                <pre><code id="answer-code"># Code jawaban akan muncul di sini</code></pre>
+            </div>
+
+            <!-- Complete Task Button -->
+            <div style="margin-top: 1.8rem; text-align: center; border-top: 1px solid var(--card-border); padding-top: 1.5rem;">
+                <button class="btn btn-success" id="btn-complete" onclick="markCompleted()" style="width: 100%; max-width: 350px;">
+                    ✅ Tandai Selesai
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Footer -->
+        <div class="nav-footer">
+            <button class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()">
+                ⬅️ Sebelumnya
+            </button>
+            <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">
+                Berikutnya ➡️
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== 4. CREATE YOUR OWN MODULE (FINAL PAGE) ==================== -->
+    <div id="page-final" class="page">
+        <div class="card">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <span class="badge final" style="font-size: 1rem; padding: 0.5rem 1.2rem;">🔥 FINAL CHALLENGE</span>
+                <h1 style="margin-top: 0.8rem;">🏆 CREATE YOUR OWN MODULE</h1>
+                <p style="font-size: 1.1rem; color: #e2e8f0;">Tunjukkan kemampuanmu! Buat module Python buatanmu sendiri di komputer/laptopmu!</p>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                <h3 style="color: #38bdf8; margin-bottom: 0.8rem;">Syarat Minimal Tantangan:</h3>
+                <ul class="checklist">
+                    <li><input type="checkbox" checked disabled> <span>Memiliki file module <code>.py</code></span></li>
+                    <li><input type="checkbox" checked disabled> <span>Memiliki minimal 1 function</span></li>
+                    <li><input type="checkbox" checked disabled> <span>Module di-import dari <code>main.py</code></span></li>
+                    <li><input type="checkbox" checked disabled> <span>Function dapat dipanggil dari <code>main.py</code></span></li>
+                    <li><input type="checkbox" checked disabled> <span>Menggunakan <code>if / else</code></span></li>
+                    <li><input type="checkbox" checked disabled> <span>Menggunakan <code>while</code></span></li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <p style="font-weight: bold; color: #a78bfa;">Visual Stuktur File Project-mu:</p>
+                <pre><code>project/
+│
+├── main.py
+│
+└── moduleku.py</code></pre>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn-success" onclick="finishAll()" style="font-size: 1.2rem; padding: 1rem 2.5rem;">
+                    🎯 Saya Sudah Selesai
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 5. RESULT PAGE ==================== -->
+    <div id="page-result" class="page">
+        <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+            <div style="font-size: 4.5rem; margin-bottom: 1rem;">🎉</div>
+            <h1>MODULE CHALLENGE COMPLETE!</h1>
+            <p style="font-size: 1.2rem;">Kamu telah menyelesaikan seluruh materi dan tantangan!</p>
+
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); border-radius: 16px; padding: 2rem; max-width: 500px; margin: 2rem auto;">
+                <p style="font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Skor Akhir Kamu</p>
+                <div style="font-size: 4rem; font-weight: 900; color: #fbbf24; line-height: 1.1;" id="final-score-text">0</div>
+                <p style="font-size: 1.1rem; color: #34d399; font-weight: bold; margin-top: 0.5rem;" id="final-completed-text">0 / 10 Challenges Completed</p>
+            </div>
+
+            <div id="result-message" style="background: rgba(59, 130, 246, 0.15); border: 1px solid #3b82f6; border-radius: 12px; padding: 1.2rem; max-width: 600px; margin: 0 auto 2rem auto; font-size: 1.2rem; font-weight: bold; color: #60a5fa;">
+                Pesan Evaluasi
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="navigateTo('review')">
+                    📚 Review Materi
+                </button>
+                <button class="btn btn-primary" onclick="restartApp()">
+                    🔄 Ulangi Dari Awal
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    /* ==================== QUESTION DATA ==================== */
+    const questions = [
+        {
+            id: 1,
+            difficulty: "🟢 EASY",
+            badgeClass: "easy",
+            title: "Membuat Function",
+            description: "Buat sebuah function bernama sapa() yang menampilkan:\nHalo dari Python!",
+            hint: "Gunakan kata kunci def untuk membuat function.",
+            answer: `def sapa():
+    print("Halo dari Python!")
+
+sapa()`
+        },
+        {
+            id: 2,
+            difficulty: "🟢 EASY",
+            badgeClass: "easy",
+            title: "Membuat Module",
+            description: "Kamu memiliki file bernama sapa.py.\nBuat function sapa() di dalam file tersebut yang menampilkan:\nHalo dari module!",
+            hint: "Module adalah file Python biasa. Buat function sapa() di dalam file sapa.py tersebut.",
+            answer: `# File: sapa.py
+
+def sapa():
+    print("Halo dari module!")`
+        },
+        {
+            id: 3,
+            difficulty: "🟢 EASY",
+            badgeClass: "easy",
+            title: "Import Module",
+            description: "Kamu memiliki module sapa.py yang berisi function sapa().\nBuat file main.py yang meng-import module tersebut dan menjalankan function-nya.",
+            hint: "Gunakan 'import sapa', kemudian panggil function menggunakan 'sapa.sapa()'.",
+            answer: `# File: sapa.py
+def sapa():
+    print("Halo dari module!")
+
+# File: main.py
+import sapa
+
+sapa.sapa()`
+        },
+        {
+            id: 4,
+            difficulty: "🟡 MEDIUM",
+            badgeClass: "medium",
+            title: "Module + Parameter",
+            description: "Buat module hitung.py yang memiliki function tambah(a, b).\nFunction tersebut mengembalikan hasil penjumlahan.\nKemudian gunakan function tersebut dari main.py.",
+            hint: "Function dengan parameter dapat menerima nilai dari main.py dan menggunakan return.",
+            answer: `# File: hitung.py
+def tambah(a, b):
+    return a + b
+
+# File: main.py
+import hitung
+
+hasil = hitung.tambah(5, 3)
+print(hasil)
+
+# Output: 8`
+        },
+        {
+            id: 5,
+            difficulty: "🟡 MEDIUM",
+            badgeClass: "medium",
+            title: "Module + Variable",
+            description: "Buat module bernama data.py.\nDi dalam module tersebut buat:\nnama = \"Budi\"\numur = 13\nKemudian tampilkan kedua data tersebut dari main.py.",
+            hint: "Gunakan nama module sebelum nama variable. Contoh: data.nama",
+            answer: `# File: data.py
+nama = "Budi"
+umur = 13
+
+# File: main.py
+import data
+
+print(data.nama)
+print(data.umur)`
+        },
+        {
+            id: 6,
+            difficulty: "🟡 MEDIUM",
+            badgeClass: "medium",
+            title: "Module + IF",
+            description: "Buat module cek.py.\nDi dalamnya buat function cek_nilai(nilai).\nJika nilai >= 70, tampilkan: Lulus\nKemudian jalankan function tersebut dari main.py dengan nilai 80.",
+            hint: "Letakkan percabangan if di dalam function pada module.",
+            answer: `# File: cek.py
+def cek_nilai(nilai):
+    if nilai >= 70:
+        print("Lulus")
+
+# File: main.py
+import cek
+
+cek.cek_nilai(80)`
+        },
+        {
+            id: 7,
+            difficulty: "🟠 HARD",
+            badgeClass: "hard",
+            title: "Module + IF ELSE",
+            description: "Modifikasi module cek.py.\nJika nilai >= 70: Lulus\nJika tidak: Belum lulus\nKemudian coba panggil dari main.py dengan nilai 60.",
+            hint: "Gunakan struktur if dan else di dalam function.",
+            answer: `# File: cek.py
+def cek_nilai(nilai):
+    if nilai >= 70:
+        print("Lulus")
+    else:
+        print("Belum lulus")
+
+# File: main.py
+import cek
+
+cek.cek_nilai(60)
+
+# Output: Belum lulus`
+        },
+        {
+            id: 8,
+            difficulty: "🟠 HARD",
+            badgeClass: "hard",
+            title: "Module + WHILE",
+            description: "Buat module angka.py.\nBuat function hitung() yang menggunakan while untuk menampilkan angka 1 sampai 5.",
+            hint: "Gunakan variable angka = 1 dan pengulangan while angka <= 5.",
+            answer: `# File: angka.py
+def hitung():
+    angka = 1
+    while angka <= 5:
+        print(angka)
+        angka = angka + 1
+
+# File: main.py
+import angka
+
+angka.hitung()`
+        },
+        {
+            id: 9,
+            difficulty: "🔴 CHALLENGE",
+            badgeClass: "challenge",
+            title: "Module + IF ELSE + WHILE",
+            description: "Buat module game.py.\nBuat function game() yang:\n- Memiliki variable angka = 1\n- Menggunakan while selama angka <= 5\n- Jika angka genap, tampilkan: [angka] Genap\n- Jika ganjil, tampilkan: [angka] Ganjil\n- Angka bertambah 1 setiap pengulangan.\nJalankan function dari main.py.",
+            hint: "Gunakan operator % 2 == 0 untuk mengecek apakah angka genap.",
+            answer: `# File: game.py
+def game():
+    angka = 1
+    while angka <= 5:
+        if angka % 2 == 0:
+            print(angka, "Genap")
+        else:
+            print(angka, "Ganjil")
+        angka = angka + 1
+
+# File: main.py
+import game
+
+game.game()`
+        },
+        {
+            id: 10,
+            difficulty: "🔥 FINAL CHALLENGE",
+            badgeClass: "final",
+            title: "Mini Project Module",
+            description: "Buat dua file: game.py dan main.py\nDi game.py, buat function cek_angka(angka):\n- Jika angka > 10 → tampilkan \"Angka besar\"\n- Jika angka <= 10 → tampilkan \"Angka kecil atau sama dengan 10\"\n\nDi main.py:\n- Import module game\n- Gunakan while input angka\n- Panggil game.cek_angka(angka)\n- Program berhenti jika user memasukkan angka 0",
+            hint: "Gunakan while angka != 0 untuk mengulang input user.",
+            answer: `# File: game.py
+def cek_angka(angka):
+    if angka > 10:
+        print("Angka besar")
+    else:
+        print("Angka kecil atau sama dengan 10")
+
+# File: main.py
+import game
+
+angka = 1
+while angka != 0:
+    angka = int(input("Masukkan angka: "))
+    if angka != 0:
+        game.cek_angka(angka)
+
+print("Program selesai!")`
+        }
+    ];
+
+    /* ==================== STATE MANAGEMENT ==================== */
+    let currentQuestionIndex = 0; // 0 to 9
+    let completedQuestions = new Set(); // Stores completed question IDs
+
+    /* ==================== NAVIGATION LOGIC ==================== */
+    function navigateTo(pageId) {
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        const targetPage = document.getElementById(`page-${pageId}`);
+        if (targetPage) {
+            targetPage.classList.add('active');
+        }
+        window.scrollTo(0, 0);
+    }
+
+    function navigateToQuestion(qNum) {
+        currentQuestionIndex = qNum - 1;
+        renderQuestion();
+        navigateTo('challenge');
+    }
+
+    function renderQuestion() {
+        const q = questions[currentQuestionIndex];
+
+        // Update header progress
+        const total = questions.length;
+        const current = currentQuestionIndex + 1;
+        const percent = Math.round((current / total) * 100);
+
+        document.getElementById('question-number-label').innerText = `Soal ${current} dari ${total}`;
+        document.getElementById('progress-percent-label').innerText = `${percent}%`;
+        document.getElementById('progress-bar-fill').style.width = `${percent}%`;
+        document.getElementById('score-val').innerText = completedQuestions.size * 10;
+        document.getElementById('completed-val').innerText = completedQuestions.size;
+
+        // Update Question Card Content
+        const badgeElem = document.getElementById('difficulty-badge');
+        badgeElem.innerText = q.difficulty;
+        badgeElem.className = `badge ${q.badgeClass}`;
+
+        document.getElementById('q-id-title').innerText = `CHALLENGE #${q.id}`;
+        document.getElementById('question-title').innerText = q.title;
+        document.getElementById('question-description').innerText = q.description;
+        document.getElementById('hint-text').innerText = q.hint;
+        document.getElementById('answer-code').innerText = q.answer;
+
+        // Reset toggles for hint & answer
+        document.getElementById('hint-box').style.display = 'none';
+        document.getElementById('answer-box').style.display = 'none';
+        document.getElementById('btn-toggle-answer').innerText = '🔓 Lihat Kunci Jawaban';
+        document.getElementById('btn-copy').innerText = '📋 Copy Code';
+
+        // Update Complete Button
+        const completeBtn = document.getElementById('btn-complete');
+        if (completedQuestions.has(q.id)) {
+            completeBtn.innerText = '✅ Sudah Selesai';
+            completeBtn.className = 'btn btn-secondary';
+            completeBtn.disabled = true;
+        } else {
+            completeBtn.innerText = '✅ Tandai Selesai';
+            completeBtn.className = 'btn btn-success';
+            completeBtn.disabled = false;
+        }
+
+        // Update Navigation buttons
+        const prevBtn = document.getElementById('btn-prev');
+        const nextBtn = document.getElementById('btn-next');
+
+        if (currentQuestionIndex === 0) {
+            prevBtn.disabled = true;
+        } else {
+            prevBtn.disabled = false;
+        }
+
+        if (currentQuestionIndex === total - 1) {
+            nextBtn.innerText = '🏆 Final Challenge';
+            nextBtn.className = 'btn btn-success';
+        } else {
+            nextBtn.innerText = 'Berikutnya ➡️';
+            nextBtn.className = 'btn btn-primary';
+        }
+
+        window.scrollTo(0, 0);
+    }
+
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            renderQuestion();
+        }
+    }
+
+    function nextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            renderQuestion();
+        } else {
+            // Navigate to Final Challenge Page
+            navigateTo('final');
+        }
+    }
+
+    /* ==================== INTERACTION LOGIC ==================== */
+    function toggleHint() {
+        const hintBox = document.getElementById('hint-box');
+        if (hintBox.style.display === 'none' || hintBox.style.display === '') {
+            hintBox.style.display = 'block';
+        } else {
+            hintBox.style.display = 'none';
+        }
+    }
+
+    function toggleAnswer() {
+        const answerBox = document.getElementById('answer-box');
+        const btn = document.getElementById('btn-toggle-answer');
+        if (answerBox.style.display === 'none' || answerBox.style.display === '') {
+            answerBox.style.display = 'block';
+            btn.innerText = '🔒 Sembunyikan Kunci Jawaban';
+        } else {
+            answerBox.style.display = 'none';
+            btn.innerText = '🔓 Lihat Kunci Jawaban';
+        }
+    }
+
+    function copyCode() {
+        const q = questions[currentQuestionIndex];
+        const textarea = document.createElement('textarea');
+        textarea.value = q.answer;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+
+        const btnCopy = document.getElementById('btn-copy');
+        btnCopy.innerText = '✅ Code copied!';
+        setTimeout(() => {
+            btnCopy.innerText = '📋 Copy Code';
+        }, 2000);
+    }
+
+    function markCompleted() {
+        const q = questions[currentQuestionIndex];
+        if (!completedQuestions.has(q.id)) {
+            completedQuestions.add(q.id);
+            renderQuestion();
+        }
+    }
+
+    function finishAll() {
+        const finalScore = completedQuestions.size * 10;
+        document.getElementById('final-score-text').innerText = `${finalScore} / 100`;
+        document.getElementById('final-completed-text').innerText = `${completedQuestions.size} / 10 Challenges Completed`;
+
+        const msgBox = document.getElementById('result-message');
+        if (finalScore >= 90) {
+            msgBox.innerText = "🔥 Amazing! Kamu sudah bisa membuat module sendiri!";
+            msgBox.style.borderColor = "#10b981";
+            msgBox.style.color = "#34d399";
+        } else if (finalScore >= 70) {
+            msgBox.innerText = "👏 Good job! Konsep module sudah mulai dikuasai!";
+            msgBox.style.borderColor = "#3b82f6";
+            msgBox.style.color = "#60a5fa";
+        } else if (finalScore >= 50) {
+            msgBox.innerText = "💪 Lumayan! Coba review import dan function lagi!";
+            msgBox.style.borderColor = "#f59e0b";
+            msgBox.style.color = "#fbbf24";
+        } else {
+            msgBox.innerText = "📚 Jangan menyerah! Coba ulangi Quick Review!";
+            msgBox.style.borderColor = "#ef4444";
+            msgBox.style.color = "#f87171";
+        }
+
+        navigateTo('result');
+    }
+
+    function restartApp() {
+        completedQuestions.clear();
+        currentQuestionIndex = 0;
+        navigateTo('home');
+    }
+</script>
+</body>
+</html>
